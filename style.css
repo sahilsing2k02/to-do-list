@@ -16,7 +16,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
   background: #1e293b;
   padding: 25px;
   border-radius: 12px;
@@ -58,6 +58,34 @@ body {
   background: #16a34a;
 }
 
+.stats {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.filter-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #334155;
+  color: white;
+  transition: 0.2s;
+}
+
+.filter-btn.active {
+  background: #3b82f6;
+}
+
 ul {
   list-style: none;
   margin-top: 20px;
@@ -90,6 +118,42 @@ li.completed {
 }
 
 .delete-btn:hover {
+  background: #dc2626;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+#clearCompleted {
+  background: #f59e0b;
+  color: black;
+}
+
+#clearCompleted:hover {
+  background: #d97706;
+  color: white;
+}
+
+#clearAll {
+  background: #ef4444;
+  color: white;
+}
+
+#clearAll:hover {
   background: #dc2626;
 }
 

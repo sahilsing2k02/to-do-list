@@ -2,19 +2,44 @@ const taskInput = document.getElementById("taskInput");
 const addBtn = document.getElementById("addBtn");
 const taskList = document.getElementById("taskList");
 
-// Load tasks from localStorage
+const taskCount = document.getElementById("taskCount");
+
+const filterBtns = document.querySelectorAll(".filter-btn");
+const clearAllBtn = document.getElementById("clearAll");
+const clearCompletedBtn = document.getElementById("clearCompleted");
+
+// Load tasks
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-// Save to localStorage
+let currentFilter = "all";
+
+// Save tasks to localStorage
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Display tasks
+// Update counter
+function updateCount() {
+  const total = tasks.length;
+  const pending = tasks.filter(task => !task.completed).length;
+  taskCount.textContent = `Total: ${total} | Pending: ${pending}`;
+}
+
+// Render tasks based on filter
 function renderTasks() {
   taskList.innerHTML = "";
 
-  tasks.forEach((task, index) => {
+  let filteredTasks = tasks;
+
+  if (currentFilter === "pending") {
+    filteredTasks = tasks.filter(task => !task.completed);
+  } else if (currentFilter === "completed") {
+    filteredTasks = tasks.filter(task => task.completed);
+  }
+
+  filteredTasks.forEach((task) => {
+    const index = tasks.indexOf(task);
+
     const li = document.createElement("li");
     li.textContent = task.text;
 
@@ -22,10 +47,11 @@ function renderTasks() {
       li.classList.add("completed");
     }
 
-    // Mark complete when clicked
+    // Toggle complete
     li.addEventListener("click", () => {
       tasks[index].completed = !tasks[index].completed;
       saveTasks();
+      updateCount();
       renderTasks();
     });
 
@@ -35,15 +61,18 @@ function renderTasks() {
     deleteBtn.classList.add("delete-btn");
 
     deleteBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // prevents marking complete
+      e.stopPropagation();
       tasks.splice(index, 1);
       saveTasks();
+      updateCount();
       renderTasks();
     });
 
     li.appendChild(deleteBtn);
     taskList.appendChild(li);
   });
+
+  updateCount();
 }
 
 // Add task
@@ -54,13 +83,37 @@ addBtn.addEventListener("click", () => {
   tasks.push({ text: text, completed: false });
   saveTasks();
   renderTasks();
-
   taskInput.value = "";
 });
 
-// Enter key add task
+// Add on Enter key
 taskInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") addBtn.click();
+});
+
+// Filter button click
+filterBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    currentFilter = btn.dataset.filter;
+    renderTasks();
+  });
+});
+
+// Clear All
+clearAllBtn.addEventListener("click", () => {
+  tasks = [];
+  saveTasks();
+  renderTasks();
+});
+
+// Clear Completed
+clearCompletedBtn.addEventListener("click", () => {
+  tasks = tasks.filter(task => !task.completed);
+  saveTasks();
+  renderTasks();
 });
 
 // Initial render
